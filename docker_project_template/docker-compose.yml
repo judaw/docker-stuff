@@ -1,0 +1,39 @@
+version: '3.5'
+
+services:
+  db:
+    container_name: db
+    image: mysql:5
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: DRUPALCAMP
+      MYSQL_DATABASE: drupal
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./conf/my-custom.cnf:/etc/mysql/conf.d/my-custom.cnf
+    tty: true
+    restart: always
+    networks:
+      - overlay
+  web:
+    container_name: webserver
+    image: web_web:latest
+    volumes:
+      - ./www:/var/www
+      - ./conf/apache-drupal.conf:/etc/apache2/sites-enabled/000-default.conf
+      - ./restore:/restore
+      - ./conf/my-custom.cnf:/etc/mysql/conf.d/my-custom.cnf
+    ports:
+      - 80:80
+      - 443:443
+    tty: true
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - overlay
+
+networks:
+  overlay:
+    name: network
