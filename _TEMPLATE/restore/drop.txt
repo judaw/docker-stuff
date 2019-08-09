@@ -1,0 +1,1 @@
+drop database if exists drupal; create database drupal; drop database if exists simplesaml; create database simplesaml;
